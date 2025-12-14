@@ -1,19 +1,32 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
+base {
+	archivesName = project.archives_base_name
+}
 
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
 	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content { // optional, may make it import faster
+			includeGroup "maven.modrinth"
+		}
+	}
+	maven {
 		name = "Ladysnake Libs"
-		url = 'https://ladysnake.jfrog.io/artifactory/mods'
+		url = 'https://maven.ladysnake.org/releases'
+		content {
+			includeGroup 'io.github.ladysnake'
+			includeGroupByRegex 'org.ladysnake.*'
+			includeGroupByRegex 'dev\\.onyxstudios.*'
+			includeGroup 'io.github.apace100'
+		}
 	}
 	maven {
 		url = 'https://maven.cafeteria.dev'
@@ -22,19 +35,19 @@ repositories {
 		}
 	}
 	maven {
-		url "https://maven.jamieswhiteshirt.com/libs-release"
+		url = "https://maven.jamieswhiteshirt.com/libs-release"
 		content {
 			includeGroup "com.jamieswhiteshirt"
 		}
 	}
 	maven {
-		url "https://jitpack.io"
+		url = "https://maven.shedaniel.me/"
 	}
 	maven {
-		url "https://maven.shedaniel.me/"
+		url = "https://maven.terraformersmc.com/"
 	}
 	maven {
-		url "https://maven.terraformersmc.com/"
+		url = "https://maven.bawnorton.com/releases"
 	}
 }
 
@@ -43,7 +56,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "com.github.eggohito:origins-fabric:${project.origins_version}"
+	modImplementation "io.github.apace100:origins-fabric:${project.origins_version}"
 }
 
 processResources {
@@ -55,10 +68,12 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release >= 17
+	it.options.release = 17
 }
 
 java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 	withSourcesJar()
 }
 
